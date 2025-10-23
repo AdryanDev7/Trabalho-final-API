@@ -1,5 +1,5 @@
 package br.com.serratec.dto;
 
-public class ClienteDTO {
+public class UsuarioDTO {
 
 }
