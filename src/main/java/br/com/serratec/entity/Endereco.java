@@ -13,6 +13,7 @@ public class Endereco {
 	private Long id;
 	@NotBlank
 	private String cep;
+	
 	@NotBlank
 	private String logradouro;
 
@@ -20,6 +21,7 @@ public class Endereco {
 	private String bairro;
 
 	private String numero;
+	
 	@NotBlank
 	private String cidade;
 
