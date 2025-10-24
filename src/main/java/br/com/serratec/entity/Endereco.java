@@ -10,17 +10,21 @@ import jakarta.validation.constraints.NotBlank;
 public class Endereco {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
+	
 	@NotBlank
 	private String cep;
+	
 	@NotBlank
 	private String logradouro;
 	
 	private String numero;
+	
 	@NotBlank
 	private String cidade;
+	
 	@NotBlank
-	private String UF;
+	private String uf;
 	
 	public Endereco() {
 		// TODO Auto-generated constructor stub
@@ -28,23 +32,23 @@ public class Endereco {
 
 	
 	public Endereco(Long id, @NotBlank String cep, @NotBlank String logradouro, String numero, @NotBlank String cidade,
-			@NotBlank String uF) {
+			@NotBlank String uf) {
 		super();
-		Id = id;
+		this.id = id;
 		this.cep = cep;
 		this.logradouro = logradouro;
 		this.numero = numero;
 		this.cidade = cidade;
-		UF = uF;
+		this.uf = uf;
 	}
 
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getCep() {
@@ -79,12 +83,12 @@ public class Endereco {
 		this.cidade = cidade;
 	}
 
-	public String getUF() {
-		return UF;
+	public String getUf() {
+		return uf;
 	}
 
-	public void setUF(String uF) {
-		UF = uF;
+	public void setUf(String uf) {
+		this.uf = uf;
 	}
 
 	
