@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 public class Produto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	@NotBlank
 	private String nome;
 	@Size(max = 500)
@@ -37,11 +37,11 @@ public class Produto {
 	private Categoria categoria;
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getNome() {

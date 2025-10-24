@@ -22,7 +22,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID Id;
+	private UUID id;
 
 	@NotBlank
 	private String nome;
@@ -49,11 +49,11 @@ public class Cliente {
 	private StatusEnum status;
 
 	public UUID getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(UUID id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getNome() {

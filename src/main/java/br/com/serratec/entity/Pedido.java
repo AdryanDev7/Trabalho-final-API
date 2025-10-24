@@ -18,7 +18,7 @@ import jakarta.persistence.ManyToOne;
 public class Pedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 
 	private Double valorTotal;
 
@@ -33,11 +33,11 @@ public class Pedido {
 	private Cliente cliente;
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public Double getValorTotal() {
