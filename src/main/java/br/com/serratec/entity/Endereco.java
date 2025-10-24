@@ -10,41 +10,31 @@ import jakarta.validation.constraints.NotBlank;
 public class Endereco {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	@NotBlank
 	private String cep;
 	@NotBlank
 	private String logradouro;
-	
+
+	@NotBlank
+	private String bairro;
+
 	private String numero;
 	@NotBlank
 	private String cidade;
+
 	@NotBlank
-	private String UF;
-	
-	public Endereco() {
-		// TODO Auto-generated constructor stub
-	}
+	private String localidade;
 
-	
-	public Endereco(Long id, @NotBlank String cep, @NotBlank String logradouro, String numero, @NotBlank String cidade,
-			@NotBlank String uF) {
-		super();
-		Id = id;
-		this.cep = cep;
-		this.logradouro = logradouro;
-		this.numero = numero;
-		this.cidade = cidade;
-		UF = uF;
-	}
-
+	@NotBlank
+	private String uf;
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getCep() {
@@ -63,6 +53,14 @@ public class Endereco {
 		this.logradouro = logradouro;
 	}
 
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
 	public String getNumero() {
 		return numero;
 	}
@@ -79,13 +77,20 @@ public class Endereco {
 		this.cidade = cidade;
 	}
 
-	public String getUF() {
-		return UF;
+	public String getLocalidade() {
+		return localidade;
 	}
 
-	public void setUF(String uF) {
-		UF = uF;
+	public void setLocalidade(String localidade) {
+		this.localidade = localidade;
 	}
 
-	
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+
 }
