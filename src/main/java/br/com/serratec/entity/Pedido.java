@@ -1,8 +1,10 @@
 package br.com.serratec.entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Pedido {
@@ -14,6 +16,8 @@ public class Pedido {
 	
 	private Produto produto;
 	
+	@ManyToOne
+    @JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 
 	

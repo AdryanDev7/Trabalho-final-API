@@ -1,18 +1,21 @@
 package br.com.serratec.entity;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
 import br.com.serratec.enums.assinaturaEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Cliente {
@@ -33,10 +36,13 @@ public class Cliente {
 	@CPF
 	private String cpf;
 	
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
 	private Endereco endereco;
 	
 	@Enumerated(EnumType.STRING)
 	private assinaturaEnum assinatura;
+
 	
 	
 	public Cliente() {
