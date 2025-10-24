@@ -1,6 +1,5 @@
 package br.com.serratec.enums;
 
-public enum assinaturaEnum {
+public enum AssinaturaEnum {
 	SEM_ASSINATURA, STANDARD, PREMIUM, PERSONNALITÉ
-
 }
