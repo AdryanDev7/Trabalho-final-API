@@ -1,33 +1,36 @@
 package br.com.serratec.entity;
-import jakarta.persistence.Id;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Pedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
-	
-	private Double valorTotal;
-	
-	private Produto produto;
-	
-	private Cliente cliente;
 
-	
-	public Pedido() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public Pedido(Long id, Double valorTotal, Produto produto, Cliente cliente) {
-		super();
-		Id = id;
-		this.valorTotal = valorTotal;
-		this.produto = produto;
-		this.cliente = cliente;
-	}
+	private Double valorTotal;
+
+	private LocalDate dataPedido;
+
+	@ManyToMany
+	@JoinTable(name = "pedido_produto", joinColumns = @JoinColumn(name = "id_pedido"), inverseJoinColumns = @JoinColumn(name = "id_produto"))
+	private List<Produto> produto;
+
+	@JsonBackReference
+	@ManyToOne
+	private Cliente cliente;
 
 	public Long getId() {
 		return Id;
@@ -45,14 +48,6 @@ public class Pedido {
 		this.valorTotal = valorTotal;
 	}
 
-	public Produto getProduto() {
-		return produto;
-	}
-
-	public void setProduto(Produto produto) {
-		this.produto = produto;
-	}
-
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -60,5 +55,21 @@ public class Pedido {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	
+
+	public LocalDate getDataPedido() {
+		return dataPedido;
+	}
+
+	public void setDataPedido(LocalDate dataPedido) {
+		this.dataPedido = dataPedido;
+	}
+
+	public List<Produto> getProduto() {
+		return produto;
+	}
+
+	public void setProduto(List<Produto> produto) {
+		this.produto = produto;
+	}
+
 }
