@@ -14,7 +14,7 @@ import jakarta.persistence.OneToMany;
 public class Categoria {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	private String nome;
 	private String descricao;
 	
