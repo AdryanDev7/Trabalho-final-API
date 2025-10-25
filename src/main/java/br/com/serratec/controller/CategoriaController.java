@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.serratec.dto.CategoriaRequestDTO;
-import br.com.serratec.dto.CategoriaResponseDTO;
-
 import br.com.serratec.entity.Categoria;
 import br.com.serratec.service.CategoriaService;
 import jakarta.validation.Valid;
@@ -33,8 +30,8 @@ public class CategoriaController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CategoriaResponseDTO inserir(@Valid @RequestBody CategoriaRequestDTO categoriaDTO) {
-		return service.inserir(categoriaDTO);
+	public Categoria inserir(@Valid @RequestBody Categoria categoria) {
+		return service.inserir(categoria);
 	}
 
 	@PutMapping("/{id}")
@@ -43,7 +40,7 @@ public class CategoriaController {
 	}
 
 	@GetMapping
-	public List<CategoriaResponseDTO> listar() {
+	public List<Categoria> listar() {
 		return service.listar();
 	}
 

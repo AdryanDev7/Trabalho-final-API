@@ -1,6 +1,5 @@
 package br.com.serratec.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.serratec.dto.CategoriaRequestDTO;
-import br.com.serratec.dto.CategoriaResponseDTO;
 import br.com.serratec.entity.Categoria;
 import br.com.serratec.repository.CategoriaRepository;
 
@@ -20,13 +17,8 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repository;
 
-	public List<CategoriaResponseDTO> listar() {
-		List<CategoriaResponseDTO> categoriasDTO = new ArrayList<>();
-		for (Categoria categoria : repository.findAll()) {
-			categoriasDTO
-					.add(new CategoriaResponseDTO(categoria.getId(), categoria.getNome(), categoria.getDescricao()));
-		}
-		return categoriasDTO;
+	public List<Categoria> listar() {
+		return repository.findAll();
 	}
 
 	public Page<Categoria> listarPorPagina(Pageable pageable) {
@@ -37,21 +29,15 @@ public class CategoriaService {
 		return repository.findByNomeContaining(pNome, pageable);
 	}
 
-	public CategoriaResponseDTO inserir(CategoriaRequestDTO categoriaRequestDTO) {
+	public Categoria inserir(Categoria categoria) {
 
-		Optional<Categoria> categoriaOpt = repository.findByNome(categoriaRequestDTO.getNome());
+		Optional<Categoria> categoriaOpt = repository.findByNome(categoria.getNome());
 
 		if (categoriaOpt.isPresent()) {
 			throw new RuntimeException("Uma categoria com este nome já existe.");
 		}
 
-		Categoria categoria = new Categoria();
-		categoria.setNome(categoriaRequestDTO.getNome());
-		categoria.setDescricao(categoriaRequestDTO.getDescricao());
-
-		categoria = repository.save(categoria);
-
-		return new CategoriaResponseDTO(categoria.getId(), categoria.getNome(), categoria.getDescricao());
+		return repository.save(categoria);
 	}
 
 	public Categoria editar(Long id, Categoria c) {
