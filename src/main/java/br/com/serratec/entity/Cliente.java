@@ -1,5 +1,4 @@
 package br.com.serratec.entity;
-
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
