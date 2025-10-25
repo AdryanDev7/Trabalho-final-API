@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 
 import br.com.serratec.dto.PedidoRequestDTO;
 import br.com.serratec.dto.PedidoResponseDTO;
+import br.com.serratec.entity.ItemPedido;
 import br.com.serratec.entity.Pedido;
-import br.com.serratec.entity.Produto;
 import br.com.serratec.repository.ClienteRepository;
 import br.com.serratec.repository.PedidoRepository;
-import br.com.serratec.repository.ProdutoRepository;
 
 @Service
 public class PedidoService {
@@ -26,32 +25,32 @@ public class PedidoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
-
     public PedidoResponseDTO inserir(PedidoRequestDTO dto) {
         if (dto.getCliente() == null) {
             throw new RuntimeException("Cliente não informado.");
         }
-        if (dto.getProduto() == null) {
-            throw new RuntimeException("Nenhum produto informado.");
+        if (dto.getItens() == null) {
+            throw new RuntimeException("Nenhum item de pedido informado.");
         }
 
         Pedido pedido = new Pedido();
         pedido.setCliente(dto.getCliente());
-        pedido.setProduto(dto.getProduto());
+        pedido.setItens(dto.getItens());
         pedido.setDataPedido(LocalDate.now());
 
-        double total = calcularValorTotalComDesconto(pedido);
-        pedido.setValorTotal(total);
+        for (ItemPedido item : dto.getItens()) {
+            item.setPedido(pedido);
+            item.setSubtotal(item.getQuantidade() * item.getValorVenda());
+        }
 
+        pedido.setValorTotal(calcularValorTotalComDesconto(pedido));
         pedido = repository.save(pedido);
 
         return new PedidoResponseDTO(
                 pedido.getId(),
                 pedido.getValorTotal(),
                 pedido.getDataPedido(),
-                pedido.getProduto()
+                pedido.getItens()
         );
     }
 
@@ -64,7 +63,7 @@ public class PedidoService {
                     pedido.getId(),
                     pedido.getValorTotal(),
                     pedido.getDataPedido(),
-                    pedido.getProduto()
+                    pedido.getItens()
             ));
         }
 
@@ -79,7 +78,7 @@ public class PedidoService {
                 pedido.getId(),
                 pedido.getValorTotal(),
                 pedido.getDataPedido(),
-                pedido.getProduto()
+                pedido.getItens()
         );
     }
 
@@ -87,33 +86,33 @@ public class PedidoService {
         Pedido pedidoExistente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
 
-        pedidoExistente.setProduto(dto.getProduto());
+        pedidoExistente.setItens(dto.getItens());
         pedidoExistente.setCliente(dto.getCliente());
-        pedidoExistente.setValorTotal(calcularValorTotalComDesconto(pedidoExistente));
 
+        for (ItemPedido item : dto.getItens()) {
+            item.setPedido(pedidoExistente);
+            item.setSubtotal(item.getQuantidade() * item.getValorVenda());
+        }
+
+        pedidoExistente.setValorTotal(calcularValorTotalComDesconto(pedidoExistente));
         pedidoExistente = repository.save(pedidoExistente);
 
         return new PedidoResponseDTO(
                 pedidoExistente.getId(),
                 pedidoExistente.getValorTotal(),
                 pedidoExistente.getDataPedido(),
-                pedidoExistente.getProduto()
+                pedidoExistente.getItens()
         );
     }
 
     private double calcularValorTotalComDesconto(Pedido pedido) {
         double total = 0;
-
-        for (Produto produto : pedido.getProduto()) {
-            total += produto.getValor();
+        for (ItemPedido item : pedido.getItens()) {
+            total += item.getSubtotal();
         }
-
         if (pedido.getCliente() != null && pedido.getCliente().getAssinatura() != null) {
-            double desconto = pedido.getCliente().getAssinatura().getDesconto();
-            total = total * desconto;
+            total *= pedido.getCliente().getAssinatura().getDesconto();
         }
-
         return total;
     }
-
 }
