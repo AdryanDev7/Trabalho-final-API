@@ -1,6 +1,5 @@
 package br.com.serratec.entity;
 
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -9,9 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -27,14 +25,22 @@ public class Produto {
 
 	private Double valor;
 
-	@ManyToMany
-	@JoinTable(name = "pedido_produto", joinColumns = @JoinColumn(name = "id_pedido"), inverseJoinColumns = @JoinColumn(name = "id_produto"))
-	private List<Pedido> pedido;
-
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
+
+	@JsonBackReference
+	@OneToMany(mappedBy = "produto")
+	private ItemPedido itemPedido;
+
+	public ItemPedido getItemPedido() {
+		return itemPedido;
+	}
+
+	public void setItemPedido(ItemPedido itemPedido) {
+		this.itemPedido = itemPedido;
+	}
 
 	public Long getId() {
 		return id;

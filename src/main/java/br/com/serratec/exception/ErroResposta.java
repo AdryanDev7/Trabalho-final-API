@@ -48,5 +48,3 @@ public class ErroResposta {
 	public void setErros(List<String> erros) {
 		this.erros = erros;
 	}
-
-}

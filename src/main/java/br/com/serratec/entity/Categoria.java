@@ -1,5 +1,7 @@
 package br.com.serratec.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -7,22 +9,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class Categoria {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@NotBlank
+	private Long Id;
 	private String nome;
-	@Size(max = 500)
 	private String descricao;
 	
+	@OneToMany(mappedBy = "categoria") 
 	@JsonManagedReference
-	@OneToMany(mappedBy = "categoria")
-	private Produto produto;
+	private List<Produto> produtos;
+	
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
+	}
+
+	public Categoria() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public Long getId() {
 		return id;
