@@ -3,17 +3,17 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import br.com.serratec.enums.assinaturaEnum;
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import br.com.serratec.enums.AssinaturaEnum;
+import br.com.serratec.enums.StatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -21,52 +21,38 @@ import jakarta.validation.constraints.NotBlank;
 public class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID Id;
-	
+	private UUID id;
+
 	@NotBlank
 	private String nome;
-	
+
 	@NotBlank
 	private String telefone;
-	
+
 	@Email
 	private String email;
-	
-	//private String senha
+
 	@CPF
 	private String cpf;
-	
-	@ManyToOne
-	@JoinColumn(name = "cliente_id")
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "cliente")
+	private Pedido pedido;
+
 	private Endereco endereco;
-	
+
 	@Enumerated(EnumType.STRING)
-	private assinaturaEnum assinatura;
+	private AssinaturaEnum assinatura;
 
-	
-	
-	public Cliente() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Cliente(UUID id, @NotBlank String nome, @NotBlank String telefone, @Email String email, @CPF String cpf,
-			Endereco endereco, assinaturaEnum assinatura) {
-		super();
-		Id = id;
-		this.nome = nome;
-		this.telefone = telefone;
-		this.email = email;
-		this.cpf = cpf;
-		this.endereco = endereco;
-		this.assinatura = assinatura;
-	}
+	@Enumerated(EnumType.STRING)
+	private StatusEnum status;
 
 	public UUID getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(UUID id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -109,16 +95,28 @@ public class Cliente {
 		this.endereco = endereco;
 	}
 
-	public assinaturaEnum getAssinatura() {
+	public AssinaturaEnum getAssinatura() {
 		return assinatura;
 	}
 
-	public void setAssinatura(assinaturaEnum assinatura) {
+	public void setAssinatura(AssinaturaEnum assinatura) {
 		this.assinatura = assinatura;
 	}
-	
-	
-	
-	
+
+	public Pedido getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(Pedido pedido) {
+		this.pedido = pedido;
+	}
+
+	public StatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEnum status) {
+		this.status = status;
+	}
 
 }

@@ -1,47 +1,53 @@
 package br.com.serratec.entity;
 
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Produto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	@NotBlank
 	private String nome;
 	@Size(max = 500)
 	private String descricao;
-	
+
 	private Double valor;
-	
+
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
-	
-	
-	public Produto() {
-		// TODO Auto-generated constructor stub
+
+	@JsonBackReference
+	@OneToMany(mappedBy = "produto")
+	private ItemPedido itemPedido;
+
+	public ItemPedido getItemPedido() {
+		return itemPedido;
 	}
 
-	public Produto(Long id, @NotBlank String nome, @Size(max = 500) String descricao, Double valor,
-			Categoria categoria) {
-		super();
-		Id = id;
-		this.nome = nome;
-		this.descricao = descricao;
-		this.valor = valor;
-		this.categoria = categoria;
+	public void setItemPedido(ItemPedido itemPedido) {
+		this.itemPedido = itemPedido;
 	}
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -75,6 +81,5 @@ public class Produto {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	
+
 }
