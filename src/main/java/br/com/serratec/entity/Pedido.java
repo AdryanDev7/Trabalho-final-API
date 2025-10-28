@@ -1,6 +1,7 @@
 package br.com.serratec.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -19,20 +20,11 @@ public class Pedido {
 
 	@JsonBackReference
 	@OneToMany(mappedBy = "produto")
-	private ItemPedido itemPedido;
+	private List<ItemPedido> itens;
 	
-	public ItemPedido getItemPedido() {
-		return itemPedido;
-	}
-
-	public void setItemPedido(ItemPedido itemPedido) {
-		this.itemPedido = itemPedido;
-	}
-
 	private Double valorTotal;
 
 	private LocalDate dataPedido;
-	
 	
 	@JsonBackReference
 	@ManyToOne
@@ -44,6 +36,14 @@ public class Pedido {
 
 	public void setId(Long id) {
 		this.id = id;
+	}	
+
+	public List<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(List<ItemPedido> itens) {
+		this.itens = itens;
 	}
 
 	public Double getValorTotal() {
