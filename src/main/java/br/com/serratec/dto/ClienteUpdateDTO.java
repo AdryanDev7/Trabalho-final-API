@@ -10,7 +10,6 @@ public class ClienteUpdateDTO {
 	private Set<Cliente> clientes = new HashSet<>();
 
 	private String nome;
-
 	private String email;
 	private String telefone;
 

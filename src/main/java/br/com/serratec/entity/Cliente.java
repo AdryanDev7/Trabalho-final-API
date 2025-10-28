@@ -46,6 +46,11 @@ public class Cliente {
 
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
+	
+	@Override
+	public String toString() {
+		return "ID: " + id + "\nNome: " + nome + "\nEmail: " + email;
+	}
 
 	public UUID getId() {
 		return id;
