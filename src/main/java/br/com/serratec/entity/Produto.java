@@ -34,6 +34,9 @@ public class Produto {
 	@OneToMany(mappedBy = "produto")
 	private ItemPedido itemPedido;
 
+	public Produto(Long id, String nome, Categoria categoria) {
+	}
+
 	public ItemPedido getItemPedido() {
 		return itemPedido;
 	}

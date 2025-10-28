@@ -1,95 +1,71 @@
 package br.com.serratec.exception;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ControllerExceptionHandler {
+public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ErroResposta> handleResourceNotFound(ResourceNotFoundException ex) {
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Not Found",
-				ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-	}
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-	@ExceptionHandler(ValidationException.class)
-	public ResponseEntity<ErroResposta> handleValidation(ValidationException ex) {
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Validation Error",
-				ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-	}
+		List<String> erros = new ArrayList<>();
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErroResposta> handleValidationErrors(MethodArgumentNotValidException ex) {
-		Map<String, String> errors = new HashMap<>();
-		ex.getBindingResult().getAllErrors().forEach(error -> {
-			String fieldName = ((FieldError) error).getField();
-			String errorMessage = error.getDefaultMessage();
-			errors.put(fieldName, errorMessage);
-		});
-
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
-				"Validation Failed", errors.toString());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<ErroResposta> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-		String message = "Erro de integridade do banco de dados";
-
-		if (ex.getMessage().contains("Duplicate entry")) {
-			message = "Registro duplicado. Este valor já existe no sistema.";
+		for (FieldError erro : ex.getBindingResult().getFieldErrors()) {
+			erros.add(erro.getField() + ":" + erro.getDefaultMessage());
 		}
 
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.CONFLICT.value(), "Database Error",
-				message);
-		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+		ErroResposta erroResposta = new ErroResposta(status.value(), "Existem campos inválidos", LocalDateTime.now(),
+				erros);
+
+		return super.handleExceptionInternal(ex, erroResposta, headers, status, request);
 	}
 
-	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public ResponseEntity<ErroResposta> handleEnumError(MethodArgumentTypeMismatchException ex) {
-		String message = String.format("Valor inválido '%s' para o campo '%s'", ex.getValue(), ex.getName());
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
 
-		if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
-			Object[] enumConstants = ex.getRequiredType().getEnumConstants();
-			message += ". Valores permitidos: " + java.util.Arrays.toString(enumConstants);
-		}
+		ErroResposta erroResposta = new ErroResposta(status.value(), "Existem campos inválidos", LocalDateTime.now(),
+				erros);
 
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
-				"Invalid Enum Value", message);
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return super.handleExceptionInternal(ex, erroResposta, headers, status, request);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErroResposta> handleGeneralException(Exception ex) {
-		ErroResposta error = new ErroResposta(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(),
-				"Internal Server Error", "Ocorreu um erro inesperado: " + ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	@ExceptionHandler(UsuarioException.class) // serve para criar uma nova regra de erro perosnalizada
+	protected ResponseEntity<Object> handleUsuarioException(UsuarioException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				"Existem campos inválidos", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erroResposta);
 	}
 	
 	@ExceptionHandler(HttpClientErrorException.class)
-	protected ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException ex) {
+	protected ResponseEntity<Object>handleHttpClientErrorException(HttpClientErrorException ex){
 		List<String> erros = new ArrayList<>();
 		erros.add(ex.getMessage());
 		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
-				"Verifique o CEP informado e tente novamente!", LocalDateTime.now(), erros);
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+		
 	}
-	
-	
 }
