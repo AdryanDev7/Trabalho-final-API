@@ -1,6 +1,7 @@
 package br.com.serratec.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.serratec.dto.ClienteRequestDTO;
 import br.com.serratec.dto.ClienteResponseDTO;
+import br.com.serratec.dto.ClienteUpdateDTO;
 import br.com.serratec.entity.Cliente;
 import br.com.serratec.service.ClienteService;
 import jakarta.validation.Valid;
@@ -29,30 +30,20 @@ public class ClienteController {
 
 	@PostMapping
 	@ResponseStatus
-	public Cliente inserirCliente(@RequestBody Cliente cliente) {
-		return service.inserirCliente();
+	public Cliente inserirCliente(@Valid @RequestBody Cliente cliente) {
+		return service.inserirCliente(cliente);
 	}
 
 	@PutMapping("{/id}")
-	@ResponseStatus(HttpStatus.UPGRADE_REQUIRED)
-	public ResponseEntity<Cliente> atualizarCliente(@Valid @PathVariable @RequestBody ClienteRequestDTO clienteDTO){
-		ClienteResponseDTO responseDTO = service.atualizarCliente();
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public ResponseEntity<ClienteResponseDTO> atualizarCliente(@Valid @PathVariable UUID id, @RequestBody ClienteUpdateDTO updateDTO) {
+		ClienteResponseDTO responseDTO = service.atualizarCliente(id, updateDTO);
 		return ResponseEntity.ok(responseDTO);
 	}
-	
 
 	@GetMapping
-	public List<Cliente> listar() {
+	public List<ClienteResponseDTO> listar() {
 		return service.listar();
-	}
-
-	@GetMapping("{/id}")
-	public ResponseEntity<Cliente> buscarCliente(@PathVariable Long id) {
-		Cliente cliente = service.buscarCliente(id);
-		if (cliente != null) {
-			return ResponseEntity.ok(cliente);
-		}
-		return ResponseEntity.notFound().build();
 	}
 
 }
