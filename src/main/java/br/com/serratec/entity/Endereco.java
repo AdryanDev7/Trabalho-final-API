@@ -4,32 +4,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Endereco {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotBlank
 	private String cep;
-	
-	@NotBlank
 	private String logradouro;
-
-	@NotBlank
 	private String bairro;
-
-	private String numero;
-	
-	@NotBlank
-	private String cidade;
-
-	@NotBlank
 	private String localidade;
-
-	@NotBlank
 	private String uf;
+	
+	public Endereco() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Endereco(Long id, String cep, String logradouro, String bairro, String localidade, String uf) {
+		super();
+		this.id = id;
+		this.cep = cep;
+		this.logradouro = logradouro;
+		this.bairro = bairro;
+		this.localidade = localidade;
+		this.uf = uf;
+	}
 
 	public Long getId() {
 		return id;
@@ -63,21 +62,6 @@ public class Endereco {
 		this.bairro = bairro;
 	}
 
-	public String getNumero() {
-		return numero;
-	}
-
-	public void setNumero(String numero) {
-		this.numero = numero;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
 
 	public String getLocalidade() {
 		return localidade;

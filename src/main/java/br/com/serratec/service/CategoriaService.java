@@ -1,65 +1,83 @@
 package br.com.serratec.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.serratec.dto.CategoriaRequestDTO;
+import br.com.serratec.dto.CategoriaResponseDTO;
 import br.com.serratec.entity.Categoria;
 import br.com.serratec.repository.CategoriaRepository;
 
 @Service
 public class CategoriaService {
 
-	@Autowired
-	private CategoriaRepository repository;
+    @Autowired
+    private CategoriaRepository repository;
 
-	public List<Categoria> listar() {
-		return repository.findAll();
-	}
 
-	public Page<Categoria> listarPorPagina(Pageable pageable) {
-		return repository.findAll(pageable);
-	}
+    public CategoriaResponseDTO inserir(CategoriaRequestDTO dto) {
+        if (dto.getNome() == null) {
+            throw new RuntimeException("Nome não informado.");
+        }
+        if (dto.getDescricao() == null) {
+            throw new RuntimeException("Descrição não informada.");
+        }
 
-	public Page<Categoria> buscarNome(String pNome, Pageable pageable) {
-		return repository.findByNomeContaining(pNome, pageable);
-	}
+        Categoria categoria = new Categoria();
+        categoria.setNome(dto.getNome());
+        categoria.setDescricao(dto.getDescricao());
 
-	public Categoria inserir(Categoria categoria) {
+        categoria = repository.save(categoria);
 
-		Optional<Categoria> categoriaOpt = repository.findByNome(categoria.getNome());
+        return new CategoriaResponseDTO(
+                categoria.getId(),
+                categoria.getNome(),
+                categoria.getDescricao()
+        );
+    }
 
-		if (categoriaOpt.isPresent()) {
-			throw new RuntimeException("Uma categoria com este nome já existe.");
-		}
+    public List<CategoriaResponseDTO> listar() {
+        List<CategoriaResponseDTO> ResponseDTO = new ArrayList<>();
+        List<Categoria> categorias = repository.findAll();
 
-		return repository.save(categoria);
-	}
+        for (Categoria categoria : categorias) {
+        	CategoriaResponseDTO dto = new CategoriaResponseDTO(categoria.getId(),
+        			categoria.getNome(),
+        			categoria.getDescricao());
+        	ResponseDTO.add(dto);
 
-	public Categoria editar(Long id, Categoria c) {
-		Optional<Categoria> categoria = repository.findById(id);
+        }
 
-		if (categoria.isPresent()) {
-			Categoria categoriaExistente = categoria.get();
-			categoriaExistente.setNome(c.getNome());
-			categoriaExistente.setDescricao(c.getDescricao());
-			return repository.save(categoriaExistente);
-		}
+        return ResponseDTO;
+    }
 
-		throw new RuntimeException("Categoria não encontrada com o id!");
-	}
+    public CategoriaResponseDTO buscarId(Long id) {
+    	Optional<Categoria> categorias = Optional.of(repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrado.")));
+    	
+        Categoria categoria = categorias.get();
+        return new CategoriaResponseDTO(categoria.getId(),categoria.getNome(),categoria.getDescricao());
+    }
 
-	public Categoria buscarId(Long id) {
-		Optional<Categoria> categoriaOpt = repository.findById(id);
+    public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
+        Optional<Categoria> categorias = Optional.of(repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrado.")));
 
-		if (categoriaOpt.isPresent()) {
-			return categoriaOpt.get();
-		}
+        Categoria categoria = categorias.get();
+        categoria.setNome(dto.getNome());
+        categoria.setDescricao(dto.getDescricao());
 
-		throw new RuntimeException("Categoria não encontrada com o id!");
-	}
+        Categoria atualizada = repository.save(categoria);
+
+        return new CategoriaResponseDTO(
+        		atualizada.getId(),
+        		atualizada.getNome(),
+        		atualizada.getDescricao()
+        );
+    }
+
 }

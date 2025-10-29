@@ -1,6 +1,7 @@
 package br.com.serratec.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -19,8 +20,8 @@ public class Pedido {
 	private Long id;
 
 	@JsonBackReference
-	@OneToMany(mappedBy = "produto")
-	private List<ItemPedido> itens;
+	@OneToMany(mappedBy = "pedido")
+	private List<ItemPedido> itens = new ArrayList<>();
 	
 	private Double valorTotal;
 

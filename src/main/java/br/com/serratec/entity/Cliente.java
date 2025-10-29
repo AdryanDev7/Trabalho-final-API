@@ -3,16 +3,16 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import br.com.serratec.enums.AssinaturaEnum;
 import br.com.serratec.enums.StatusEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,17 +35,25 @@ public class Cliente {
 	@CPF
 	private String cpf;
 
-	@JsonManagedReference
-	@OneToMany(mappedBy = "cliente")
-	private Pedido pedido;
+	private String senha;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_endereco")
 	private Endereco endereco;
-
+	
 	@Enumerated(EnumType.STRING)
 	private AssinaturaEnum assinatura;
 
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
+<<<<<<< Updated upstream
+=======
+	
+	@Override
+	public String toString() {
+		return "\nNome: " + nome + "\nEmail: " + email;
+	}
+>>>>>>> Stashed changes
 
 	public UUID getId() {
 		return id;
@@ -103,13 +111,6 @@ public class Cliente {
 		this.assinatura = assinatura;
 	}
 
-	public Pedido getPedido() {
-		return pedido;
-	}
-
-	public void setPedido(Pedido pedido) {
-		this.pedido = pedido;
-	}
 
 	public StatusEnum getStatus() {
 		return status;
@@ -119,4 +120,13 @@ public class Cliente {
 		this.status = status;
 	}
 
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	
 }
