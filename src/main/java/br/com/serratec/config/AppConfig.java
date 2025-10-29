@@ -43,15 +43,15 @@ public class AppConfig {
 	    http.csrf(csrf -> csrf.disable())
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 	        .authorizeHttpRequests(requests -> requests
-	            .requestMatchers(HttpMethod.GET,"/usuarios").permitAll()
+	            .requestMatchers(HttpMethod.GET,"/usuarios").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET, "/pedidos").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET, "/categorias").hasRole("ADMIN")
 	            .requestMatchers(HttpMethod.POST,"/perfis").permitAll()
 	            .requestMatchers("/h2-console/**").permitAll()
 	            
 	            .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
 
-	            .requestMatchers(HttpMethod.GET,"/usuarios").hasRole("ADMIN")
-	            .requestMatchers(HttpMethod.GET, "/funcionarios/*/foto").hasAnyRole("ADMIN", "USER","RH")
-	            .requestMatchers(HttpMethod.POST, "/funcionarios").hasAnyRole("ADMIN", "USER","RH")
+	            .requestMatchers(HttpMethod.POST, "/pedidos").hasRole("ADMIN")
 	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
