@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.serratec.dto.PedidoRequestDTO;
 import br.com.serratec.dto.PedidoResponseDTO;
+import br.com.serratec.dto.ItemPedidoResponseDTO;
 import br.com.serratec.entity.ItemPedido;
 import br.com.serratec.entity.Pedido;
 import br.com.serratec.entity.Produto;
@@ -49,7 +50,7 @@ public class PedidoService {
         for (PedidoRequestDTO.ItemPedidoDTO itemDTO : dto.getItens()) {
             Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemDTO.getProdutoId()));
-            
+
             ItemPedido item = new ItemPedido();
             item.setProduto(produto);
             item.setQuantidade(itemDTO.getQuantidade());
@@ -62,29 +63,59 @@ public class PedidoService {
         }
 
         pedido.setItens(itensPedido);
-        pedido.setValorTotal(calcularValorTotalComDesconto(pedido));
+
+        double total = 0;
+        for (ItemPedido item : pedido.getItens()) {
+            total += item.getSubtotal();
+        }
+        if (pedido.getCliente().getAssinatura() != null) {
+            total *= pedido.getCliente().getAssinatura().getDesconto();
+        }
+        pedido.setValorTotal(total);
+
         pedido = repository.save(pedido);
 
-        return new PedidoResponseDTO(
-                pedido.getId(),
-                pedido.getValorTotal(),
-                pedido.getDataPedido(),
-                pedido.getItens()
-        );
-}
+        List<ItemPedidoResponseDTO> itensDTO = new ArrayList<>();
+        for (ItemPedido item : pedido.getItens()) {
+            double valorAposDesconto = item.getSubtotal() - item.getDesconto();
+            itensDTO.add(new ItemPedidoResponseDTO(
+                    item.getProduto().getId(),
+                    item.getProduto().getNome(),
+                    item.getProduto().getDescricao(),
+                    item.getValorVenda(),
+                    item.getQuantidade(),
+                    item.getDesconto(),
+                    item.getSubtotal(),
+                    valorAposDesconto)
+            );
+        }
 
+        return new PedidoResponseDTO(pedido.getId(), pedido.getDataPedido(), pedido.getValorTotal(), 
+        		pedido.getCliente().getAssinatura().name(), itensDTO);
+
+    }
 
     public List<PedidoResponseDTO> listar() {
         List<PedidoResponseDTO> pedidosDTO = new ArrayList<>();
         List<Pedido> pedidos = repository.findAll();
 
         for (Pedido pedido : pedidos) {
-            pedidosDTO.add(new PedidoResponseDTO(
-                    pedido.getId(),
-                    pedido.getValorTotal(),
-                    pedido.getDataPedido(),
-                    pedido.getItens()
-            ));
+            List<ItemPedidoResponseDTO> itensDTO = new ArrayList<>();
+            for (ItemPedido item : pedido.getItens()) {
+                double valorAposDesconto = item.getSubtotal() - item.getDesconto();
+                itensDTO.add(new ItemPedidoResponseDTO(
+                        item.getProduto().getId(),
+                        item.getProduto().getNome(),
+                        item.getProduto().getDescricao(),
+                        item.getValorVenda(),
+                        item.getQuantidade(),
+                        item.getDesconto(),
+                        item.getSubtotal(),
+                        valorAposDesconto)
+                );
+            }
+            pedidosDTO.add(new PedidoResponseDTO(pedido.getId(),pedido.getDataPedido(),pedido.getValorTotal(),
+                    pedido.getCliente().getAssinatura().name(),itensDTO));
         }
 
         return pedidosDTO;
@@ -94,11 +125,27 @@ public class PedidoService {
         Pedido pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
 
+        List<ItemPedidoResponseDTO> itensDTO = new ArrayList<>();
+        for (ItemPedido item : pedido.getItens()) {
+            double valorAposDesconto = item.getSubtotal() - item.getDesconto();
+            itensDTO.add(new ItemPedidoResponseDTO(
+                    item.getProduto().getId(),
+                    item.getProduto().getNome(),
+                    item.getProduto().getDescricao(),
+                    item.getValorVenda(),
+                    item.getQuantidade(),
+                    item.getDesconto(),
+                    item.getSubtotal(),
+                    valorAposDesconto)
+            );
+        }
+
         return new PedidoResponseDTO(
                 pedido.getId(),
-                pedido.getValorTotal(),
                 pedido.getDataPedido(),
-                pedido.getItens()
+                pedido.getValorTotal(),
+                pedido.getCliente().getAssinatura().name(),
+                itensDTO
         );
     }
 
@@ -120,7 +167,6 @@ public class PedidoService {
             item.setQuantidade(itemDTO.getQuantidade());
             item.setDesconto(itemDTO.getDesconto() != null ? itemDTO.getDesconto() : 0.0);
             item.setPedido(pedidoExistente);
-
             item.setValorVenda(produto.getValor());
             item.setSubtotal(produto.getValor() * item.getQuantidade() - item.getDesconto());
 
@@ -128,27 +174,34 @@ public class PedidoService {
         }
 
         pedidoExistente.setItens(itensPedido);
-        pedidoExistente.setValorTotal(calcularValorTotalComDesconto(pedidoExistente));
+
+        double total = 0;
+        for (ItemPedido item : pedidoExistente.getItens()) {
+            total += item.getSubtotal();
+        }
+        if (pedidoExistente.getCliente().getAssinatura() != null) {
+            total *= pedidoExistente.getCliente().getAssinatura().getDesconto();
+        }
+        pedidoExistente.setValorTotal(total);
 
         pedidoExistente = repository.save(pedidoExistente);
 
-        return new PedidoResponseDTO(
-                pedidoExistente.getId(),
-                pedidoExistente.getValorTotal(),
-                pedidoExistente.getDataPedido(),
-                pedidoExistente.getItens()
-        );
-    }
+        List<ItemPedidoResponseDTO> itensDTO = new ArrayList<>();
+        for (ItemPedido item : pedidoExistente.getItens()) {
+            double valorAposDesconto = item.getSubtotal() - item.getDesconto();
+            itensDTO.add(new ItemPedidoResponseDTO(
+                    item.getProduto().getId(),
+                    item.getProduto().getNome(),
+                    item.getProduto().getDescricao(),
+                    item.getValorVenda(),
+                    item.getQuantidade(),
+                    item.getDesconto(),
+                    item.getSubtotal(),
+                    valorAposDesconto)
+            );
+        }
 
-    private double calcularValorTotalComDesconto(Pedido pedido) {
-        double total = 0;
-        for (ItemPedido item : pedido.getItens()) {
-            total += item.getSubtotal();
-        }
-        if (pedido.getCliente() != null && pedido.getCliente().getAssinatura() != null) {
-            total *= pedido.getCliente().getAssinatura().getDesconto();
-        }
-        return total;
+        return new PedidoResponseDTO(pedidoExistente.getId(),pedidoExistente.getDataPedido(),pedidoExistente.getValorTotal(),
+                pedidoExistente.getCliente().getAssinatura().name(),itensDTO);
     }
-    
 }
