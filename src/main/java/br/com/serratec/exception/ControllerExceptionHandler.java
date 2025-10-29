@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -57,15 +58,77 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erroResposta);
 	}
-	
+
 	@ExceptionHandler(HttpClientErrorException.class)
-	protected ResponseEntity<Object>handleHttpClientErrorException(HttpClientErrorException ex){
+	protected ResponseEntity<Object> handleHttpClientErrorException(HttpClientErrorException ex) {
 		List<String> erros = new ArrayList<>();
 		erros.add(ex.getMessage());
 		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
 				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
-		
+
 	}
+
+	@ExceptionHandler(CategoriaNotFoundException.class)
+	protected ResponseEntity<Object> CategoriaNotFoundException(CategoriaNotFoundException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+	}
+
+	@ExceptionHandler(ClienteException.class)
+	protected ResponseEntity<Object> ClienteException(ClienteException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+	}
+
+	@ExceptionHandler(EnumException.class)
+	protected ResponseEntity<Object> ClienteException(EnumException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+	}
+
+	@ExceptionHandler(FornecedorException.class)
+	protected ResponseEntity<Object> FornecedorException(FornecedorException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+	}
+
+	@ExceptionHandler(ProdutoException.class)
+	protected ResponseEntity<Object> ProdutoException(ProdutoException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	protected ResponseEntity<Object> UsernameNotFoundException(UsernameNotFoundException ex) {
+		List<String> erros = new ArrayList<>();
+		erros.add(ex.getMessage());
+		ErroResposta erroResposta = new ErroResposta(HttpStatus.NOT_FOUND.value(),
+				"CEP não encontrado, verifique e tente novamente!", LocalDateTime.now(), erros);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResposta);
+
+	}
+
 }

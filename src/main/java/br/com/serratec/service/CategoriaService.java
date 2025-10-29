@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.com.serratec.dto.CategoriaRequestDTO;
 import br.com.serratec.dto.CategoriaResponseDTO;
 import br.com.serratec.entity.Categoria;
+import br.com.serratec.exception.CategoriaNotFoundException;
 import br.com.serratec.repository.CategoriaRepository;
 
 @Service
@@ -21,10 +22,10 @@ public class CategoriaService {
 
     public CategoriaResponseDTO inserir(CategoriaRequestDTO dto) {
         if (dto.getNome() == null) {
-            throw new RuntimeException("Nome não informado.");
+            throw new CategoriaNotFoundException("Nome não informado.");
         }
         if (dto.getDescricao() == null) {
-            throw new RuntimeException("Descrição não informada.");
+            throw new CategoriaNotFoundException("Descrição não informada.");
         }
 
         Categoria categoria = new Categoria();
@@ -57,7 +58,7 @@ public class CategoriaService {
 
     public CategoriaResponseDTO buscarId(Long id) {
     	Optional<Categoria> categorias = Optional.of(repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrado.")));
+                .orElseThrow(() -> new CategoriaNotFoundException("Categoria não encontrado.")));
     	
         Categoria categoria = categorias.get();
         return new CategoriaResponseDTO(categoria.getId(),categoria.getNome(),categoria.getDescricao());
@@ -65,7 +66,7 @@ public class CategoriaService {
 
     public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
         Optional<Categoria> categorias = Optional.of(repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrado.")));
+                .orElseThrow(() -> new CategoriaNotFoundException("Categoria não encontrado.")));
 
         Categoria categoria = categorias.get();
         categoria.setNome(dto.getNome());

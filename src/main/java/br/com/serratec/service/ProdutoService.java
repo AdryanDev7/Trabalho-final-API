@@ -11,6 +11,7 @@ import br.com.serratec.dto.ProdutoRequestDTO;
 import br.com.serratec.dto.ProdutoResponseDTO;
 import br.com.serratec.entity.Categoria;
 import br.com.serratec.entity.Produto;
+import br.com.serratec.exception.ProdutoException;
 import br.com.serratec.repository.CategoriaRepository;
 import br.com.serratec.repository.ProdutoRepository;
 
@@ -34,7 +35,7 @@ public class ProdutoService {
 
     public ProdutoResponseDTO inserir(ProdutoRequestDTO dto) {
         Categoria categoria = categoriaRepository.findById(dto.getCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new ProdutoException("Categoria não encontrada"));
 
         Produto novoProduto = new Produto();
         novoProduto.setNome(dto.getNome());
@@ -59,7 +60,7 @@ public class ProdutoService {
         produto.setValor(dto.getValor());
 
         Categoria categoria = categoriaRepository.findById(dto.getCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new ProdutoException("Categoria não encontrada"));
         produto.setCategoria(categoria);
 
         Produto atualizado = repository.save(produto);
