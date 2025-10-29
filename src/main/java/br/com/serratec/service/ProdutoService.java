@@ -2,57 +2,68 @@ package br.com.serratec.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.serratec.dto.ProdutoRequestDTO;
+import br.com.serratec.dto.ProdutoResponseDTO;
+import br.com.serratec.entity.Categoria;
 import br.com.serratec.entity.Produto;
-import br.com.serratec.exception.UsuarioException;
+import br.com.serratec.repository.CategoriaRepository;
 import br.com.serratec.repository.ProdutoRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class ProdutoService {
 
-	@Autowired
-	private ProdutoRepository repository;
+    @Autowired
+    private ProdutoRepository repository;
 
-	@Autowired
-	private ProdutoRepository repository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
-	@Autowired
+    public List<ProdutoResponseDTO> listar() {
+        List<Produto> produtos = repository.findAll();
+        List<ProdutoResponseDTO> listaDTO = new ArrayList<>();
+        for (Produto produto : produtos) {
+            listaDTO.add(new ProdutoResponseDTO(produto.getId(),produto.getNome(),produto.getDescricao(),produto.getValor()));
+        }
+        return listaDTO;
+    }
 
-	public List<Produto> listar() {
-		List<Produto> produtoLista = new ArrayList<>();
+    public ProdutoResponseDTO inserir(ProdutoRequestDTO dto) {
+        Categoria categoria = categoriaRepository.findById(dto.getCategoria())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
-		for (Produto produto : repository.findAll()) {
-			produtoLista.add(new Produto(produto.getId(), produto.getNome(), produto.getCategoria()));
-		}
-		return produtoLista;
-	}
+        Produto novoProduto = new Produto();
+        novoProduto.setNome(dto.getNome());
+        novoProduto.setDescricao(dto.getDescricao());
+        novoProduto.setValor(dto.getValor());
+        novoProduto.setCategoria(categoria);
 
-	public Produto inserirProduto(Produto produto) {
-		return repository.save(produto);
-	}
+        Produto salvo = repository.save(novoProduto);
 
-	@Transactional
-	public Produto atualizarProduto(Long id, Produto update) {
-		Produto produtoAtualizar = repository.findById(id)
-				.orElseThrow(() -> new UsuarioException("Produto não encontrado com o ID: " + id));
+        return new ProdutoResponseDTO(salvo.getId(),salvo.getNome(),salvo.getDescricao(),salvo.getValor());
+    }
 
-		if (update.getNome() != null && !update.getNome().trim().isEmpty()) {
-			produtoAtualizar.setNome(update.getNome());
-		}
+    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
+        Optional<Produto> opt = repository.findById(id);
+        if (opt.isEmpty()) {
+            return null;
+        }
 
-		if (update.getDescricao() != null && !update.getDescricao().trim().isEmpty()) {
-			produtoAtualizar.setDescricao(update.getDescricao());
-		}
+        Produto produto = opt.get();
+        produto.setNome(dto.getNome());
+        produto.setDescricao(dto.getDescricao());
+        produto.setValor(dto.getValor());
 
-		if (update.getValor() != null) {
-			produtoAtualizar.setValor(update.getValor());
-		}
+        Categoria categoria = categoriaRepository.findById(dto.getCategoria())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        produto.setCategoria(categoria);
 
-		return repository.save(produtoAtualizar);
-	}
+        Produto atualizado = repository.save(produto);
 
+        return new ProdutoResponseDTO(atualizado.getId(),atualizado.getNome(),atualizado.getDescricao(),atualizado.getValor());
+    }
 }

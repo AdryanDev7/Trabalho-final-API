@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.serratec.entity.Produto;
+
 import br.com.serratec.service.ProdutoService;
 import jakarta.validation.Valid;
 
@@ -19,19 +19,22 @@ public class ProdutoController {
     private ProdutoService service;
 
     @GetMapping
-    public List<Produto> listar() {
-        return service.listar();
+    public ResponseEntity<List<ProdutoResponseDTO>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
     @PostMapping
-    public ResponseEntity<Produto> inserir(@Valid @RequestBody Produto produto) {
-        Produto Produto = service.inserirProduto(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Produto);
+    public ResponseEntity<ProdutoResponseDTO> inserir(@Valid @RequestBody ProdutoRequestDTO produto) {
+        ProdutoResponseDTO salvo = service.inserir(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
-        Produto atualizado = service.atualizarProduto(id, produto);
+    public ResponseEntity<ProdutoResponseDTO> atualizar(
+            @PathVariable Long id, 
+            @Valid @RequestBody ProdutoRequestDTO produto) {
+        
+        ProdutoResponseDTO atualizado = service.atualizar(id, produto);
         if (atualizado == null) {
             return ResponseEntity.notFound().build();
         }

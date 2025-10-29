@@ -21,7 +21,18 @@ public class ClienteResponseDTO {
 		this.telefone = clienteAtualizar.getTelefone();
 	}
 
-	public ClienteResponseDTO(UUID id, String nome, String email) {
+	public ClienteResponseDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	
+
+	public ClienteResponseDTO(UUID id, String nome, String email, String telefone) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.telefone = telefone;
 	}
 
 	public UUID getId() {
