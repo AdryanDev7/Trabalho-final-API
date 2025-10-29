@@ -1,13 +1,11 @@
 package br.com.serratec.exception;
 
+public class ClienteException extends RuntimeException{
 
-public class EnderecoException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-
-	public EnderecoException(String message) {
+	
+	public ClienteException(String message) {
 		super(message);
 	}
-
-	
 
 }

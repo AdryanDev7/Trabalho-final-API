@@ -1,18 +1,32 @@
 package br.com.serratec.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.serratec.entity.Produto;
+import br.com.serratec.exception.UsuarioException;
+import br.com.serratec.repository.ProdutoRepository;
+import jakarta.transaction.Transactional;
+
+@Service
 public class ProdutoService {
 
-<<<<<<< Updated upstream
-=======
 	@Autowired
 	private ProdutoRepository repository;
 
+	@Autowired
+	private ProdutoRepository repository;
+
+	@Autowired
 
 	public List<Produto> listar() {
 		List<Produto> produtoLista = new ArrayList<>();
 
 		for (Produto produto : repository.findAll()) {
-			produtoLista.add(new Produto(produto.getId(), produto.getNome(),produto.getDescricao(), produto.getValor(), produto.getCategoria()));
+			produtoLista.add(new Produto(produto.getId(), produto.getNome(), produto.getCategoria()));
 		}
 		return produtoLista;
 	}
@@ -41,5 +55,4 @@ public class ProdutoService {
 		return repository.save(produtoAtualizar);
 	}
 
->>>>>>> Stashed changes
 }

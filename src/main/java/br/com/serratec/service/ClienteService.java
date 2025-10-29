@@ -1,9 +1,5 @@
 package br.com.serratec.service;
 
-<<<<<<< Updated upstream
-public class ClienteService {
-
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,40 +25,43 @@ public class ClienteService {
 	@Autowired
 	private EnderecoService enderecoService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.serratec.config.MailConfig;
+import br.com.serratec.dto.ClienteResponseDTO;
+import br.com.serratec.dto.ClienteUpdateDTO;
+import br.com.serratec.entity.Cliente;
+import br.com.serratec.exception.ClienteException;
+import br.com.serratec.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
+
+@Service
+public class ClienteService {
+
+	@Autowired
+	private ClienteRepository repository;
 
 	@Autowired
 	private MailConfig mailConfig;
 
 	public List<ClienteResponseDTO> listar() {
-	    List<ClienteResponseDTO> clienteDTO = new ArrayList<>();
+		List<ClienteResponseDTO> clienteDTO = new ArrayList<>();
 
-	    for (Cliente cliente : repository.findAll()) {
-	        clienteDTO.add(new ClienteResponseDTO(cliente));
-	    }
-	    return clienteDTO;
+		for (Cliente cliente : repository.findAll()) {
+			clienteDTO.add(new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getEmail()));
+		}
+		return clienteDTO;
 	}
-
 
 	public Cliente inserirCliente(Cliente cliente) {
-		EnderecoResponseDTO enderecoDTO = enderecoService.buscarCep(cliente.getEndereco().getCep());
-
-		Endereco endereco = new Endereco();
-		endereco.setCep(enderecoDTO.cep());
-		endereco.setLogradouro(enderecoDTO.logradouro());
-		endereco.setBairro(enderecoDTO.bairro());
-		endereco.setLocalidade(enderecoDTO.localidade());
-		endereco.setUf(enderecoDTO.uf());
-
-		cliente.setEndereco(endereco);
-
-
-	    cliente.setEndereco(endereco);
-
-	    // mailConfig.enviarEmail(cliente.getEmail(), "Cadastro atualizado com sucesso", cliente.toString());
-
-	    return repository.save(cliente);
+		mailConfig.enviarEmail(cliente.getEmail(), "Cadastro atualizado com sucesso", cliente.toString());
+		return repository.save(cliente);
 	}
-
 
 	@Transactional
 	public ClienteResponseDTO atualizarCliente(UUID id, ClienteUpdateDTO update) {
@@ -87,5 +86,4 @@ public class ClienteService {
 		return new ClienteResponseDTO(clienteAtualizar);
 	}
 
->>>>>>> Stashed changes
 }

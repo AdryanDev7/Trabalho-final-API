@@ -46,14 +46,11 @@ public class Cliente {
 
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
-<<<<<<< Updated upstream
-=======
 	
 	@Override
 	public String toString() {
 		return "\nNome: " + nome + "\nEmail: " + email;
 	}
->>>>>>> Stashed changes
 
 	public UUID getId() {
 		return id;
