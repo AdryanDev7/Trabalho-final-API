@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-
+import br.com.serratec.dto.ProdutoRequestDTO;
+import br.com.serratec.dto.ProdutoResponseDTO;
 import br.com.serratec.service.ProdutoService;
 import jakarta.validation.Valid;
 

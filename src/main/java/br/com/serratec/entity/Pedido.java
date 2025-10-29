@@ -30,7 +30,7 @@ public class Pedido {
 	@JsonBackReference
 	@ManyToOne
 	private Cliente cliente;
-
+	
 	public Long getId() {
 		return id;
 	}

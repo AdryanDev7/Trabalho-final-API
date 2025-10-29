@@ -30,19 +30,11 @@ public class Produto {
 	@ManyToOne
 	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
-	/*
-	@JsonBackReference
 	@OneToMany(mappedBy = "produto")
-<<<<<<< Updated upstream
-	private ItemPedido itemPedido;
-
-	public Produto(Long id, String nome, Categoria categoria) {
-	}
-
-	public ItemPedido getItemPedido() {
-=======
 	private List<ItemPedido> itemPedido;
-	*/
+	
+
+
 	
 	public Produto() {
 		// TODO Auto-generated constructor stub
@@ -56,15 +48,14 @@ public class Produto {
 		this.valor = valor;
 		this.categoria = categoria;
 	}
-	/*
+	
 	public List<ItemPedido> getItemPedido() {
->>>>>>> Stashed changes
 		return itemPedido;
 	}
 
 	public void setItemPedido(List<ItemPedido> itemPedido) {
 		this.itemPedido = itemPedido;
-	}*/
+	}
 
 	public Long getId() {
 		return id;
