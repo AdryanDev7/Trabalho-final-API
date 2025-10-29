@@ -18,6 +18,9 @@ public class ProdutoService {
 	private ProdutoRepository repository;
 
 	@Autowired
+	private ProdutoRepository repository;
+
+	@Autowired
 
 	public List<Produto> listar() {
 		List<Produto> produtoLista = new ArrayList<>();

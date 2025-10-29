@@ -1,35 +1,47 @@
 package br.com.serratec.dto;
 
 import java.util.List;
-import br.com.serratec.entity.Cliente;
-import br.com.serratec.entity.ItemPedido;
 
 public class PedidoRequestDTO {
 
-    private Cliente cliente;
-    private List<ItemPedido> itens;
+    private String clienteId;
+    private List<ItemPedidoDTO> itens;
 
-    public PedidoRequestDTO() {
+    public static class ItemPedidoDTO {
+        private Long produtoId;
+        private Integer quantidade;
+        private Double desconto; 
+
+        public Long getProdutoId() {
+            return produtoId;
+        }
+        public void setProdutoId(Long produtoId) {
+            this.produtoId = produtoId;
+        }
+        public Integer getQuantidade() {
+            return quantidade;
+        }
+        public void setQuantidade(Integer quantidade) {
+            this.quantidade = quantidade;
+        }
+        public Double getDesconto() {
+            return desconto;
+        }
+        public void setDesconto(Double desconto) {
+            this.desconto = desconto;
+        }
     }
 
-    public PedidoRequestDTO(Cliente cliente, List<ItemPedido> itens) {
-        this.cliente = cliente;
-        this.itens = itens;
+    public String getClienteId() {
+        return clienteId;
     }
-
-    public Cliente getCliente() {
-        return cliente;
+    public void setClienteId(String clienteId) {
+        this.clienteId = clienteId;
     }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<ItemPedido> getItens() {
+    public List<ItemPedidoDTO> getItens() {
         return itens;
     }
-
-    public void setItens(List<ItemPedido> itens) {
+    public void setItens(List<ItemPedidoDTO> itens) {
         this.itens = itens;
     }
 }

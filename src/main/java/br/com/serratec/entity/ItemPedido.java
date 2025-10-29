@@ -8,86 +8,96 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 @Entity
 public class ItemPedido {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@JsonManagedReference
-	@ManyToOne
-	@JoinColumn(name = "id_produto")
-	private Produto produto;
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "id_produto")
+    private Produto produto;
 
-	@JsonManagedReference
-	@ManyToOne
-	@JoinColumn(name = "id_pedido")
-	private Pedido pedido;
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "id_pedido")
+    private Pedido pedido;
 
-	private Double valorVenda;
+    private Double valorVenda;
 
-	private Integer quantidade;
+    private Integer quantidade;
 
-	private Double desconto;
+    private Double desconto;
 
-	private Double subtotal;
+    private Double subtotal;
 
-	public Double getSubtotal() {
-		return subtotal;
-	}
 
-	public void setSubtotal(Double subtotal) {
-		this.subtotal = quantidade * valorVenda;
-	}
+    public void calcularSubtotal() {
+        if (produto != null && quantidade != null) {
+            double preco = produto.getValor();
+            this.valorVenda = preco;
+            this.subtotal = (preco * quantidade);
+        }
+    }
 
-	public Double getValorVenda() {
-		return valorVenda;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setValorVenda(Double valorVenda) {
-		this.valorVenda = valorVenda;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Integer getQuantidade() {
-		return quantidade;
-	}
+    public Produto getProduto() {
+        return produto;
+    }
 
-	public void setQuantidade(Integer quantidade) {
-		this.quantidade = quantidade;
-	}
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
 
-	public Double getDesconto() {
-		return desconto;
-	}
+    public Pedido getPedido() {
+        return pedido;
+    }
 
-	public void setDesconto(Double desconto) {
-		this.desconto = desconto;
-	}
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
 
-	public Pedido getPedido() {
-		return pedido;
-	}
+    public Double getValorVenda() {
+        return valorVenda;
+    }
 
-	public void setPedido(Pedido pedido) {
-		this.pedido = pedido;
-	}
+    public void setValorVenda(Double valorVenda) {
+        this.valorVenda = valorVenda;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Integer getQuantidade() {
+        return quantidade;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
 
-	public Produto getProduto() {
-		return produto;
-	}
+    public Double getDesconto() {
+        return desconto;
+    }
 
-	public void setProduto(Produto produto) {
-		this.produto = produto;
-	}
+    public void setDesconto(Double desconto) {
+        this.desconto = desconto;
+    }
 
+    public Double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(Double subtotal) {
+        this.subtotal = subtotal;
+    }
 }

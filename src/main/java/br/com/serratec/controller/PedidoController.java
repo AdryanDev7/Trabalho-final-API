@@ -31,10 +31,12 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<PedidoResponseDTO> inserir(@RequestBody PedidoRequestDTO PedidoRequestDTO) {
-        PedidoResponseDTO novoPedido = service.inserir(PedidoRequestDTO);
+    public ResponseEntity<PedidoResponseDTO> inserir(@RequestBody PedidoRequestDTO pedidoRequestDTO) {
+        PedidoResponseDTO novoPedido = service.inserir(pedidoRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoPedido);
     }
+
+
 
     @PutMapping("{id}")
     public ResponseEntity<PedidoResponseDTO> atualizar(@PathVariable Long id, @RequestBody PedidoRequestDTO PedidoRequestDTO) {

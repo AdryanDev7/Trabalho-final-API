@@ -1,5 +1,6 @@
 package br.com.serratec.entity;
 
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -20,7 +21,7 @@ public class Produto {
 	private Long id;
 	@NotBlank
 	private String nome;
-	@Size(max = 500)
+	@Size(max=500)
 	private String descricao;
 
 	private Double valor;
@@ -29,21 +30,41 @@ public class Produto {
 	@ManyToOne
 	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
-
+	/*
 	@JsonBackReference
 	@OneToMany(mappedBy = "produto")
+<<<<<<< Updated upstream
 	private ItemPedido itemPedido;
 
 	public Produto(Long id, String nome, Categoria categoria) {
 	}
 
 	public ItemPedido getItemPedido() {
+=======
+	private List<ItemPedido> itemPedido;
+	*/
+	
+	public Produto() {
+		// TODO Auto-generated constructor stub
+	}
+	public Produto(Long id, @NotBlank String nome, @Size(max = 500) String descricao, Double valor,
+			Categoria categoria) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.descricao = descricao;
+		this.valor = valor;
+		this.categoria = categoria;
+	}
+	/*
+	public List<ItemPedido> getItemPedido() {
+>>>>>>> Stashed changes
 		return itemPedido;
 	}
 
-	public void setItemPedido(ItemPedido itemPedido) {
+	public void setItemPedido(List<ItemPedido> itemPedido) {
 		this.itemPedido = itemPedido;
-	}
+	}*/
 
 	public Long getId() {
 		return id;

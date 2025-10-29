@@ -10,6 +10,31 @@ import org.springframework.stereotype.Service;
 import br.com.serratec.config.MailConfig;
 import br.com.serratec.dto.ClienteResponseDTO;
 import br.com.serratec.dto.ClienteUpdateDTO;
+import br.com.serratec.dto.EnderecoResponseDTO;
+import br.com.serratec.entity.Cliente;
+import br.com.serratec.entity.Endereco;
+import br.com.serratec.exception.ClienteException;
+import br.com.serratec.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
+
+@Service
+public class ClienteService {
+
+	@Autowired
+	private ClienteRepository repository;
+	@Autowired
+	private EnderecoService enderecoService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.serratec.config.MailConfig;
+import br.com.serratec.dto.ClienteResponseDTO;
+import br.com.serratec.dto.ClienteUpdateDTO;
 import br.com.serratec.entity.Cliente;
 import br.com.serratec.exception.ClienteException;
 import br.com.serratec.repository.ClienteRepository;

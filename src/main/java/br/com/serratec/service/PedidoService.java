@@ -3,18 +3,20 @@ package br.com.serratec.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.serratec.dto.PedidoRequestDTO;
 import br.com.serratec.dto.PedidoResponseDTO;
 import br.com.serratec.entity.ItemPedido;
 import br.com.serratec.entity.Pedido;
+import br.com.serratec.entity.Produto;
+import br.com.serratec.entity.Cliente;
 import br.com.serratec.repository.ClienteRepository;
 import br.com.serratec.repository.PedidoRepository;
+import br.com.serratec.repository.ProdutoRepository;
 
 @Service
 public class PedidoService {
@@ -25,24 +27,41 @@ public class PedidoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
     public PedidoResponseDTO inserir(PedidoRequestDTO dto) {
-        if (dto.getCliente() == null) {
+        if (dto.getClienteId() == null) {
             throw new RuntimeException("Cliente não informado.");
         }
-        if (dto.getItens() == null) {
+        if (dto.getItens() == null || dto.getItens().isEmpty()) {
             throw new RuntimeException("Nenhum item de pedido informado.");
         }
 
+        Cliente cliente = clienteRepository.findById(UUID.fromString(dto.getClienteId()))
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+
         Pedido pedido = new Pedido();
-        pedido.setCliente(dto.getCliente());
-        pedido.setItens(dto.getItens());
+        pedido.setCliente(cliente);
         pedido.setDataPedido(LocalDate.now());
 
-        for (ItemPedido item : dto.getItens()) {
+        List<ItemPedido> itensPedido = new ArrayList<>();
+        for (PedidoRequestDTO.ItemPedidoDTO itemDTO : dto.getItens()) {
+            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemDTO.getProdutoId()));
+            
+            ItemPedido item = new ItemPedido();
+            item.setProduto(produto);
+            item.setQuantidade(itemDTO.getQuantidade());
+            item.setDesconto(itemDTO.getDesconto() != null ? itemDTO.getDesconto() : 0.0);
             item.setPedido(pedido);
-            item.setSubtotal(item.getQuantidade() * item.getValorVenda());
+            item.setValorVenda(produto.getValor());
+            item.setSubtotal(produto.getValor() * item.getQuantidade() - item.getDesconto());
+
+            itensPedido.add(item);
         }
 
+        pedido.setItens(itensPedido);
         pedido.setValorTotal(calcularValorTotalComDesconto(pedido));
         pedido = repository.save(pedido);
 
@@ -52,7 +71,8 @@ public class PedidoService {
                 pedido.getDataPedido(),
                 pedido.getItens()
         );
-    }
+}
+
 
     public List<PedidoResponseDTO> listar() {
         List<PedidoResponseDTO> pedidosDTO = new ArrayList<>();
@@ -86,15 +106,30 @@ public class PedidoService {
         Pedido pedidoExistente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
 
-        pedidoExistente.setItens(dto.getItens());
-        pedidoExistente.setCliente(dto.getCliente());
+        Cliente cliente = clienteRepository.findById(UUID.fromString(dto.getClienteId()))
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+        pedidoExistente.setCliente(cliente);
 
-        for (ItemPedido item : dto.getItens()) {
+        List<ItemPedido> itensPedido = new ArrayList<>();
+        for (PedidoRequestDTO.ItemPedidoDTO itemDTO : dto.getItens()) {
+            Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemDTO.getProdutoId()));
+
+            ItemPedido item = new ItemPedido();
+            item.setProduto(produto);
+            item.setQuantidade(itemDTO.getQuantidade());
+            item.setDesconto(itemDTO.getDesconto() != null ? itemDTO.getDesconto() : 0.0);
             item.setPedido(pedidoExistente);
-            item.setSubtotal(item.getQuantidade() * item.getValorVenda());
+
+            item.setValorVenda(produto.getValor());
+            item.setSubtotal(produto.getValor() * item.getQuantidade() - item.getDesconto());
+
+            itensPedido.add(item);
         }
 
+        pedidoExistente.setItens(itensPedido);
         pedidoExistente.setValorTotal(calcularValorTotalComDesconto(pedidoExistente));
+
         pedidoExistente = repository.save(pedidoExistente);
 
         return new PedidoResponseDTO(
@@ -115,4 +150,5 @@ public class PedidoService {
         }
         return total;
     }
+    
 }

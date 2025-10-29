@@ -1,14 +1,11 @@
 package br.com.serratec.entity;
 
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Categoria {
@@ -18,17 +15,6 @@ public class Categoria {
 	private String nome;
 	private String descricao;
 	
-	@OneToMany(mappedBy = "categoria") 
-	@JsonManagedReference
-	private List<Produto> produtos;
-	
-	public List<Produto> getProdutos() {
-		return produtos;
-	}
-
-	public void setProdutos(List<Produto> produtos) {
-		this.produtos = produtos;
-	}
 
 	public Categoria() {
 		// TODO Auto-generated constructor stub
