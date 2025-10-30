@@ -44,15 +44,20 @@ public class AppConfig {
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 	        .authorizeHttpRequests(requests -> requests
 	            .requestMatchers(HttpMethod.GET,"/usuarios").hasRole("ADMIN")
-	            .requestMatchers(HttpMethod.GET, "/pedidos").hasRole("ADMIN")
-	            .requestMatchers(HttpMethod.GET, "/categorias").hasRole("ADMIN")
-	            .requestMatchers(HttpMethod.POST,"/perfis").permitAll()
+	            .requestMatchers(HttpMethod.POST,"/usuarios").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET,"/pedidos").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.POST,"/pedidos").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET,"/categorias").permitAll()
+	            .requestMatchers(HttpMethod.POST,"/categorias").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.POST,"/produtos").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET,"/produtos").permitAll()
+	            .requestMatchers(HttpMethod.POST,"/perfis").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.GET,"/clientes").hasRole("ADMIN")
+	            .requestMatchers(HttpMethod.POST,"/clientes").permitAll()
+
 	            .requestMatchers("/h2-console/**").permitAll()
 	            
-	            .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
 
-	            .requestMatchers(HttpMethod.POST, "/pedidos").hasRole("ADMIN")
-	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .headers(headers -> headers.frameOptions().disable());

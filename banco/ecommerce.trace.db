@@ -154,3 +154,6 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/mathe/O
 	at org.h2.mvstore.SingleFileStore.open(SingleFileStore.java:81)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 59 more
+2025-10-29 19:39:35.591198-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USUARI" not found; SQL statement:
+SELECT * FROM USUARI [42102-232]

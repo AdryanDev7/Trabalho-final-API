@@ -14,6 +14,7 @@ import br.com.serratec.dto.ItemPedidoResponseDTO;
 import br.com.serratec.entity.ItemPedido;
 import br.com.serratec.entity.Pedido;
 import br.com.serratec.entity.Produto;
+import br.com.serratec.exception.ClienteException;
 import br.com.serratec.entity.Cliente;
 import br.com.serratec.repository.ClienteRepository;
 import br.com.serratec.repository.PedidoRepository;
@@ -40,7 +41,7 @@ public class PedidoService {
         }
 
         Cliente cliente = clienteRepository.findById(UUID.fromString(dto.getClienteId()))
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+                .orElseThrow(() -> new ClienteException("Cliente não encontrado."));
 
         Pedido pedido = new Pedido();
         pedido.setCliente(cliente);
@@ -85,8 +86,7 @@ public class PedidoService {
                     item.getValorVenda(),
                     item.getQuantidade(),
                     item.getDesconto(),
-                    item.getSubtotal(),
-                    valorAposDesconto)
+                    item.getSubtotal())
             );
         }
 
@@ -110,8 +110,7 @@ public class PedidoService {
                         item.getValorVenda(),
                         item.getQuantidade(),
                         item.getDesconto(),
-                        item.getSubtotal(),
-                        valorAposDesconto)
+                        item.getSubtotal())
                 );
             }
             pedidosDTO.add(new PedidoResponseDTO(pedido.getId(),pedido.getDataPedido(),pedido.getValorTotal(),
@@ -135,8 +134,7 @@ public class PedidoService {
                     item.getValorVenda(),
                     item.getQuantidade(),
                     item.getDesconto(),
-                    item.getSubtotal(),
-                    valorAposDesconto)
+                    item.getSubtotal())
             );
         }
 
@@ -196,8 +194,7 @@ public class PedidoService {
                     item.getValorVenda(),
                     item.getQuantidade(),
                     item.getDesconto(),
-                    item.getSubtotal(),
-                    valorAposDesconto)
+                    item.getSubtotal())
             );
         }
 
